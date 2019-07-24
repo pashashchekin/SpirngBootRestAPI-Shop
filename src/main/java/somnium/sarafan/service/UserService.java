@@ -3,8 +3,9 @@ package somnium.sarafan.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import somnium.sarafan.domain.Role;
 import somnium.sarafan.domain.User;
+import somnium.sarafan.enums.Role;
+import somnium.sarafan.exceptions.NotFoundException;
 import somnium.sarafan.repository.UserRepository;
 import somnium.sarafan.utils.MailSender;
 
@@ -47,6 +48,10 @@ public class UserService {
         user.setActivationCode(null);
         user.setActive(true);
         return userRepo.save(user);
+    }
+
+    public User findById(Long id){
+        return userRepo.findById(id).orElseThrow(() -> NotFoundException.forId(id));
     }
 
 

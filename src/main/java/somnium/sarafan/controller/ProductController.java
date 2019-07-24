@@ -26,13 +26,13 @@ public class ProductController {
 
     @ApiOperation(value =  "Get all products", response = Iterable.class)
     @GetMapping
-    private ResponseEntity<List<Product>> findAllProducts(){
+    public ResponseEntity<List<Product>> findAllProducts(){
         return  ResponseEntity.ok(productService.getAllProducts());
     }
 
     @ApiOperation(value =  "Get a one product by ID", response = Iterable.class)
     @GetMapping("{id}")
-    private ResponseEntity<Product> getProductById(@PathVariable Long id){
+    public ResponseEntity<Product> getProductById(@PathVariable Long id){
         return ResponseEntity.ok(productService.findById(id));
     }
 
