@@ -37,17 +37,35 @@ public class ShoppingCartController {
     public ResponseEntity<ShoppingCart> shoppingCart(@PathVariable Long id) {
         User user = userService.findById(id);
         ShoppingCart shoppingCart = user.getShoppingCart();
-        List<CartItem> cartItemList = cartItemService.findByShoppingCart(shoppingCart);
         shoppingCartService.updateShoppingCart(shoppingCart);
         return ResponseEntity.ok(shoppingCartService.updateShoppingCart(shoppingCart));
     }
 
     @PostMapping("/add")
-    public ResponseEntity<ShoppingCart> addToShoppingCart(Long itemId, Long userId) {
+    public ResponseEntity<ShoppingCart> addToShoppingCart(Long itemId, Long userId, int qty) {
         User user = userService.findById(userId);
         ShoppingCart shoppingCart = user.getShoppingCart();
         Product product = productService.findById(itemId);
-        CartItem cartItem = cartItemService.addProductToCartItem(product,user,2);
+        CartItem cartItem = cartItemService.addProductToCartItem(product,user,qty);
+        return ResponseEntity.ok(shoppingCartService.updateShoppingCart(shoppingCart));
+    }
+
+    @PutMapping("update")
+    public ResponseEntity<CartItem> updateProduct(Long itemId,int qty){
+        CartItem cartItem = cartItemService.findById(itemId);
+        return ResponseEntity.ok(cartItemService.update(cartItem,qty));
+    }
+
+    @DeleteMapping("/remove")
+    public void deleteItem(Long id){
+        cartItemService.delete(id);
+    }
+
+    @DeleteMapping("/clear")
+    public ResponseEntity<ShoppingCart> clearShoppingCart(Long id){
+        User user = userService.findById(id);
+        ShoppingCart shoppingCart = user.getShoppingCart();
+        shoppingCartService.clearShoppingCart(shoppingCart);
         return ResponseEntity.ok(shoppingCartService.updateShoppingCart(shoppingCart));
     }
 

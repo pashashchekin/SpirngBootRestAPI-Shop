@@ -6,7 +6,6 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -15,7 +14,8 @@ public class ShoppingCart implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private BigDecimal grandTotalSum;
+    private int grandTotalSum;
+    private int grandTotalQty;
 
     @OneToMany(mappedBy="shoppingCart", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
     private List<CartItem> cartItemList;

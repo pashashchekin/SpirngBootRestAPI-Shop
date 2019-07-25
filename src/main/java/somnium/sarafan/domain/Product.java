@@ -26,10 +26,9 @@ public class Product implements Serializable {
     @ApiModelProperty (notes = "The product name")
     private String name;
 
-    @Digits(integer = 6, fraction = 2)
     @Column(name = "price")
     @ApiModelProperty (notes = "The product price")
-    private BigDecimal price;
+    private int price;
 
     @Size(min = 1, max = 100)
     @Column(name = "description")

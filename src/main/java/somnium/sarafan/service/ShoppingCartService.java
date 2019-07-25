@@ -19,28 +19,24 @@ public class ShoppingCartService {
     private ShoppingCartRepository shoppingCartRepository;
 
     public ShoppingCart updateShoppingCart(ShoppingCart shoppingCart) {
-        BigDecimal cartTotal = new BigDecimal(0);
-
+        int cartTotal = 0;
+        int cartTotalQty = 0;
         List<CartItem> cartItemList = cartItemService.findByShoppingCart(shoppingCart);
-
-
+        for (CartItem cartItem: cartItemList){
+            cartTotal += cartItem.getSubtotal();
+            cartTotalQty += cartItem.getQty();
+        }
         shoppingCart.setGrandTotalSum(cartTotal);
-
+        shoppingCart.setGrandTotalQty(cartTotalQty);
         shoppingCartRepository.save(shoppingCart);
-
         return shoppingCart;
     }
 
     public void clearShoppingCart(ShoppingCart shoppingCart) {
         List<CartItem> cartItemList = cartItemService.findByShoppingCart(shoppingCart);
-
         for (CartItem cartItem : cartItemList) {
-            cartItem.setShoppingCart(null);
-            cartItemService.save(cartItem);
+            cartItemService.delete(cartItem.getId());
         }
-
-        shoppingCart.setGrandTotalSum(new BigDecimal(0));
-
         shoppingCartRepository.save(shoppingCart);
     }
 }

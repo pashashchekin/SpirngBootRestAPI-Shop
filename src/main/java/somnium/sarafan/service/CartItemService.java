@@ -9,8 +9,6 @@ import somnium.sarafan.domain.ShoppingCart;
 import somnium.sarafan.domain.User;
 import somnium.sarafan.exceptions.NotFoundException;
 import somnium.sarafan.repository.CartItemRepository;
-
-import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -25,23 +23,20 @@ public class CartItemService {
 
     public CartItem addProductToCartItem(Product product, User user, int qty) {
         List<CartItem> cartItemList = findByShoppingCart(user.getShoppingCart());
-
         for (CartItem cartItem : cartItemList) {
             if(product.getId().equals(cartItem.getProduct().getId())) {
                 cartItem.setQty(cartItem.getQty()+qty);
-//                cartItem.setSubtotal(product.getPrice().multiply(new BigDecimal(qty)));
+                cartItem.setSubtotal(product.getPrice()*cartItem.getQty());
                 cartItemRepository.save(cartItem);
                 return cartItem;
             }
         }
-
         CartItem cartItem = new CartItem();
         cartItem.setShoppingCart(user.getShoppingCart());
         cartItem.setProduct(product);
-
+        cartItem.setSubtotal(product.getPrice()*qty);
         cartItem.setQty(qty);
-//        cartItem.setSubtotal(product.getPrice().multiply(new BigDecimal(qty)));
-        cartItem = cartItemRepository.save(cartItem);
+        cartItemRepository.save(cartItem);
         return cartItem;
     }
 
@@ -49,18 +44,15 @@ public class CartItemService {
         return cartItemRepository.findById(id).orElseThrow(() -> NotFoundException.forId(id));
     }
 
-    public CartItem save(CartItem entity){
-        return cartItemRepository.save(entity);
-    }
-
-    public CartItem update(Long id, CartItem entity){
-        CartItem product = this.findById(id);
-        BeanUtils.copyProperties(entity,product,"id");
-        return cartItemRepository.save(product);
+    public CartItem update(CartItem cartItem, int qty){
+        int bigDecimal =(cartItem.getProduct().getPrice())* qty;
+        cartItem.setSubtotal(bigDecimal);
+        cartItem.setQty(qty);
+        cartItemRepository.save(cartItem);
+        return cartItem;
     }
 
     public void delete(Long id){
         cartItemRepository.deleteById(id);
     }
-
 }

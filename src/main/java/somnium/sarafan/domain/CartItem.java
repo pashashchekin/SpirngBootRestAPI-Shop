@@ -5,8 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.math.BigDecimal;
 
 @Entity
 @Data
@@ -15,7 +13,7 @@ public class CartItem {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private int qty;
-    private BigDecimal subtotal;
+    private int subtotal;
 
     @OneToOne
     private Product product;
