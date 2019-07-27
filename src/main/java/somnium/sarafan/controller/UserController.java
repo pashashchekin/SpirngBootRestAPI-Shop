@@ -5,6 +5,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import somnium.sarafan.domain.Product;
 import somnium.sarafan.domain.User;
@@ -14,15 +15,15 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("account")
-@Api(value="account", description="Operations pertaining to user account")
+@RequestMapping("/api/users")
 public class UserController {
 
     @Autowired
     UserService userService;
 
     @ApiOperation(value =  "Get all users", response = Iterable.class)
-    @GetMapping("/users")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    @GetMapping()
     private ResponseEntity<List<User>> findAllUsers(){
         return  ResponseEntity.ok(userService.getAllUsers());
     }

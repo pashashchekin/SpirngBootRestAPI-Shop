@@ -14,8 +14,6 @@ import somnium.sarafan.service.ProductService;
 import somnium.sarafan.service.ShoppingCartService;
 import somnium.sarafan.service.UserService;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("cart")
 @Api(value="cart", description="Operations pertaining to shopping cart")

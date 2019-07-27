@@ -5,7 +5,6 @@ import somnium.sarafan.enums.Role;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Set;
 
 @Entity
 @Table(name = "tb_user")
@@ -22,14 +21,10 @@ public class User implements Serializable {
     private String activationCode;
 
     private Boolean active;
+    private Boolean isAdmin;
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
     @JoinColumn(name="shoppingcart_id")
     private ShoppingCart shoppingCart;
-
-
-    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
-    @Enumerated(EnumType.STRING)
-    private Set<Role> roles;
 
 }

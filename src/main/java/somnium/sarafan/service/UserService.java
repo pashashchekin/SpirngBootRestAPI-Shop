@@ -1,8 +1,12 @@
 package somnium.sarafan.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import somnium.sarafan.config.jwt.TokenProvider;
 import somnium.sarafan.domain.User;
 import somnium.sarafan.enums.Role;
 import somnium.sarafan.exceptions.NotFoundException;
@@ -21,6 +25,12 @@ public class UserService {
     @Autowired
     private MailSender mailSender;
 
+    @Autowired
+    private TokenProvider tokenProvider;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
     public List<User> getAllUsers(){
         return userRepo.findAll();
     }
@@ -29,7 +39,6 @@ public class UserService {
         User userFromDb = userRepo.findByUsername(user.getUsername());
 
         user.setActive(false);
-        user.setRoles(Collections.singleton(Role.USER));
         user.setActivationCode(UUID.randomUUID().toString());
         if (!StringUtils.isEmpty(user.getEmail())) {
             String message = String.format(
@@ -53,6 +62,23 @@ public class UserService {
     public User findById(Long id){
         return userRepo.findById(id).orElseThrow(() -> NotFoundException.forId(id));
     }
+
+    public User getByUserName(String username){
+        return userRepo.findAll().stream().filter(u ->
+                u.getUsername().equals(username)).findFirst().orElse(null);
+    }
+
+    public String authenticate(User user) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+            return tokenProvider.createToken(authentication);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
 
 
 }
