@@ -1,8 +1,8 @@
 package somnium.sarafan.controller;
 
-
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import somnium.sarafan.domain.CartItem;
@@ -13,10 +13,12 @@ import somnium.sarafan.service.CartItemService;
 import somnium.sarafan.service.ProductService;
 import somnium.sarafan.service.ShoppingCartService;
 import somnium.sarafan.service.UserService;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
-@RequestMapping("cart")
-@Api(value="cart", description="Operations pertaining to shopping cart")
+@RequestMapping("api/cart")
+@Api(value="Cart", description="REST API for shopping cart", tags = {"Cart"})
 public class ShoppingCartController {
 
     @Autowired
@@ -32,39 +34,62 @@ public class ShoppingCartController {
     private ProductService productService;
 
     @GetMapping("{id}")
-    public ResponseEntity<ShoppingCart> shoppingCart(@PathVariable Long id) {
+    public ResponseEntity shoppingCart(@PathVariable Long id) {
+        Map<String,Object> responseBody = new HashMap<>();
         User user = userService.findById(id);
         ShoppingCart shoppingCart = user.getShoppingCart();
         shoppingCartService.updateShoppingCart(shoppingCart);
-        return ResponseEntity.ok(shoppingCartService.updateShoppingCart(shoppingCart));
+        responseBody.put("status","SUCCESS");
+        responseBody.put("message","shopping cart");
+        responseBody.put("data", shoppingCart);
+        return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<ShoppingCart> addToShoppingCart(Long itemId, Long userId, int qty) {
+    @PostMapping()
+    public ResponseEntity addToShoppingCart(Long itemId, Long userId, int qty) {
+        Map<String,Object> responseBody = new HashMap<>();
         User user = userService.findById(userId);
         ShoppingCart shoppingCart = user.getShoppingCart();
         Product product = productService.findById(itemId);
         CartItem cartItem = cartItemService.addProductToCartItem(product,user,qty);
-        return ResponseEntity.ok(shoppingCartService.updateShoppingCart(shoppingCart));
+        shoppingCartService.updateShoppingCart(shoppingCart);
+        responseBody.put("status","SUCCESS");
+        responseBody.put("message","productItem added to cart");
+        responseBody.put("data", shoppingCart);
+        return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 
-    @PutMapping("update")
-    public ResponseEntity<CartItem> updateProduct(Long itemId,int qty){
+    @PutMapping()
+    public ResponseEntity updateProduct(Long itemId,int qty){
+        Map<String,Object> responseBody = new HashMap<>();
         CartItem cartItem = cartItemService.findById(itemId);
-        return ResponseEntity.ok(cartItemService.update(cartItem,qty));
+        cartItemService.update(cartItem,qty);
+        responseBody.put("status","SUCCESS");
+        responseBody.put("message","productItem updated");
+        responseBody.put("data", cartItem);
+        return new ResponseEntity<>(responseBody,HttpStatus.OK);
     }
 
-    @DeleteMapping("/remove")
-    public void deleteItem(Long id){
+    @DeleteMapping()
+    public ResponseEntity deleteItem(Long id){
+        Map<String,Object> responseBody = new HashMap<>();
         cartItemService.delete(id);
+        responseBody.put("status","SUCCESS");
+        responseBody.put("message","productItem deleted");
+        return new ResponseEntity<>(responseBody,HttpStatus.OK);
     }
 
     @DeleteMapping("/clear")
-    public ResponseEntity<ShoppingCart> clearShoppingCart(Long id){
+    public ResponseEntity clearShoppingCart(Long id){
+        Map<String,Object> responseBody = new HashMap<>();
         User user = userService.findById(id);
         ShoppingCart shoppingCart = user.getShoppingCart();
         shoppingCartService.clearShoppingCart(shoppingCart);
-        return ResponseEntity.ok(shoppingCartService.updateShoppingCart(shoppingCart));
+        shoppingCartService.updateShoppingCart(shoppingCart);
+        responseBody.put("status", "SUCCESS");
+        responseBody.put("message", "shopping cart cleaned");
+        responseBody.put("data", shoppingCart);
+        return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 
 }

@@ -5,16 +5,19 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import somnium.sarafan.domain.Product;
 import somnium.sarafan.service.ProductService;
 
 import javax.validation.Valid;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
-@RequestMapping("products")
-@Api(value="products", description="Operations pertaining to messages")
+@RequestMapping("api/products")
+@Api(value="Products", description="REST API for products" , tags = { "Products" })
 public class ProductController {
 
     private final ProductService productService;
@@ -24,35 +27,63 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @ApiOperation(value =  "Get all products", response = Iterable.class)
+    @ApiOperation(value =  "Get all products", tags = { "Products" })
     @GetMapping
-    public ResponseEntity<List<Product>> findAllProducts(){
-        return  ResponseEntity.ok(productService.getAllProducts());
+    public ResponseEntity listProducts(){
+        Map<String,Object> responseBody = new HashMap<>();
+        Collection<Product> data = productService.getAllProducts();
+        responseBody.put("status","SUCCESS");
+        responseBody.put("message","list of products");
+        responseBody.put("data", data);
+        return new ResponseEntity<>(responseBody, HttpStatus.OK);
+
     }
 
-    @ApiOperation(value =  "Get a one product by ID", response = Iterable.class)
+    @ApiOperation(value =  "Get a one product by ID", tags = { "Products" })
     @GetMapping("{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable Long id){
-        return ResponseEntity.ok(productService.findById(id));
+    public ResponseEntity getProductById(@PathVariable Long id){
+        Map<String,Object> responseBody = new HashMap<>();
+        Product findingProduct = productService.findById(id);
+        responseBody.put("status","SUCCESS");
+        responseBody.put("message","product");
+        responseBody.put("data", findingProduct);
+        return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 
 
-    @ApiOperation(value =  "Create a new product", response = Iterable.class)
-    @PostMapping
-    public ResponseEntity<Product> addProduct(@Valid @RequestBody Product product){
-        return ResponseEntity.status(HttpStatus.CREATED).body(productService.save(product));
+    @ApiOperation(value =  "Create a new product", tags = { "Products" })
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PostMapping()
+    public ResponseEntity addProduct(@Valid @RequestBody Product product){
+        Map<String,Object> responseBody = new HashMap<>();
+        Product newProduct = productService.save(product);
+        responseBody.put("status","SUCCESS");
+        responseBody.put("message","product created");
+        responseBody.put("data", newProduct);
+        return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 
-    @ApiOperation(value =  "Update a currently  product", response = Iterable.class)
+    @ApiOperation(value =  "Update a currently  product", tags = { "Products" })
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PutMapping("{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product entity){
-        return ResponseEntity.ok(this.productService.update(id,entity));
+    public ResponseEntity updateProduct(@PathVariable Long id, @RequestBody Product entity){
+        Map<String,Object> responseBody = new HashMap<>();
+        Product updatedProduct = productService.update(id,entity);
+        responseBody.put("status","SUCCESS");
+        responseBody.put("message","product updated");
+        responseBody.put("data", updatedProduct);
+        return new ResponseEntity<>(responseBody,HttpStatus.OK);
     }
 
-    @ApiOperation(value =  "Delete a product", response = Iterable.class)
+    @ApiOperation(value =  "Delete a product", tags = { "Products" })
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @DeleteMapping("{id}")
-    public void delete(@PathVariable Long id){
+    public ResponseEntity delete(@PathVariable Long id){
+        Map<String,Object> responseBody = new HashMap<>();
         productService.delete(id);
+        responseBody.put("status","SUCCESS");
+        responseBody.put("message","product deleted");
+        return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 
 }

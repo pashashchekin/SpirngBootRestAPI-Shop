@@ -12,8 +12,6 @@ import somnium.sarafan.enums.Role;
 import somnium.sarafan.exceptions.NotFoundException;
 import somnium.sarafan.repository.UserRepository;
 import somnium.sarafan.utils.MailSender;
-
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,6 +38,7 @@ public class UserService {
 
         user.setActive(false);
         user.setActivationCode(UUID.randomUUID().toString());
+        user.setIsAdmin(false);
         if (!StringUtils.isEmpty(user.getEmail())) {
             String message = String.format(
                     "Hello, %s! \n" +
