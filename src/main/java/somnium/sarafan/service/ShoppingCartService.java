@@ -5,8 +5,6 @@ import org.springframework.stereotype.Service;
 import somnium.sarafan.domain.CartItem;
 import somnium.sarafan.domain.ShoppingCart;
 import somnium.sarafan.repository.ShoppingCartRepository;
-
-import java.math.BigDecimal;
 import java.util.List;
 
 @Service

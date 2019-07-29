@@ -53,7 +53,7 @@ public class ProductController {
 
     @ApiOperation(value =  "Create a new product", tags = { "Products" })
     @PreAuthorize("hasAnyRole('ADMIN')")
-    @PostMapping()
+    @PostMapping
     public ResponseEntity addProduct(@Valid @RequestBody Product product){
         Map<String,Object> responseBody = new HashMap<>();
         Product newProduct = productService.save(product);

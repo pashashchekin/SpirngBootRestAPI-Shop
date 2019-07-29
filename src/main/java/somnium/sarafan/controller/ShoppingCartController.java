@@ -45,7 +45,7 @@ public class ShoppingCartController {
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity addToShoppingCart(Long itemId, Long userId, int qty) {
         Map<String,Object> responseBody = new HashMap<>();
         User user = userService.findById(userId);
@@ -59,7 +59,7 @@ public class ShoppingCartController {
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 
-    @PutMapping()
+    @PutMapping
     public ResponseEntity updateProduct(Long itemId,int qty){
         Map<String,Object> responseBody = new HashMap<>();
         CartItem cartItem = cartItemService.findById(itemId);
@@ -70,7 +70,7 @@ public class ShoppingCartController {
         return new ResponseEntity<>(responseBody,HttpStatus.OK);
     }
 
-    @DeleteMapping()
+    @DeleteMapping
     public ResponseEntity deleteItem(Long id){
         Map<String,Object> responseBody = new HashMap<>();
         cartItemService.delete(id);

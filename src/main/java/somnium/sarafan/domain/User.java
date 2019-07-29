@@ -5,6 +5,7 @@ import somnium.sarafan.enums.Role;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "tb_user")
@@ -26,5 +27,8 @@ public class User implements Serializable {
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
     @JoinColumn(name="shoppingcart_id")
     private ShoppingCart shoppingCart;
+
+    @OneToMany(mappedBy = "user")
+    private List<Order> orderList;
 
 }
