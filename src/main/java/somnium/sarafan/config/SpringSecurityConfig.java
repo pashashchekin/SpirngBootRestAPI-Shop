@@ -31,9 +31,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
         // Entry points
         httpSecurity.authorizeRequests()//
-                .antMatchers("/api/auth").permitAll()//
+                .antMatchers("/api/auth").permitAll()
+                .antMatchers("/api/users/**/**").permitAll().anyRequest().hasAnyRole("USER")
                 .antMatchers("/h2-console/**/**").permitAll()
-
                 .anyRequest().authenticated();
 
         httpSecurity.apply(new TokenFilterConfigure(tokenProvider));

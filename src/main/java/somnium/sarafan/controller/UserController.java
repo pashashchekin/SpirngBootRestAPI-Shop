@@ -41,6 +41,11 @@ public class UserController {
     public ResponseEntity addUser(@Valid @RequestBody User user){
         Map<String,Object> responseBody = new HashMap<>();
         User newUser = userService.addUser(user);
+        if (user.getUsername() == null || user.getPassword() == null || user.getEmail() == null){
+            responseBody.put("status", "ERROR");
+            responseBody.put("message", "Bad request");
+            return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
+        }
         responseBody.put("status", "SUCCESS");
         responseBody.put("message", "user added");
         responseBody.put("data", newUser);

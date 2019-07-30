@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import somnium.sarafan.config.jwt.TokenProvider;
+import somnium.sarafan.domain.ShoppingCart;
 import somnium.sarafan.domain.User;
 import somnium.sarafan.enums.Role;
 import somnium.sarafan.exceptions.NotFoundException;
@@ -35,14 +36,16 @@ public class UserService {
 
     public User addUser(User user){
         User userFromDb = userRepo.findByUsername(user.getUsername());
-
+        ShoppingCart shoppingCart = new ShoppingCart();
         user.setActive(false);
         user.setActivationCode(UUID.randomUUID().toString());
         user.setIsAdmin(false);
+        user.setShoppingCart(shoppingCart);
+        shoppingCart.setUser(user);
         if (!StringUtils.isEmpty(user.getEmail())) {
             String message = String.format(
                     "Hello, %s! \n" +
-                            "Welcome to MyShop. Please, visit next link for activate your account: http://localhost:8080/account/activate/%s",
+                            "Welcome to MyShop. Please, visit next link for activate your account: http://localhost:8080/api/users/activate/%s",
                     user.getUsername(),
                     user.getActivationCode()
             );

@@ -1,11 +1,13 @@
 package somnium.sarafan.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import somnium.sarafan.enums.OrderStatus;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -18,8 +20,12 @@ public class Order implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private Date orderDate;
-    private Date shippingDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd HH:mm:ss")
+    private LocalDateTime orderDate;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd HH:mm:ss")
+    private LocalDateTime shippingDate;
+
     private OrderStatus orderStatus;
     private String deliveryMethod;
     private int orderTotalSum;
