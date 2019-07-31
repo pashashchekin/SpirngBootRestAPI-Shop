@@ -10,10 +10,7 @@ import somnium.sarafan.domain.CartItem;
 import somnium.sarafan.domain.Order;
 import somnium.sarafan.domain.ShoppingCart;
 import somnium.sarafan.domain.User;
-import somnium.sarafan.service.CartItemService;
-import somnium.sarafan.service.OrderService;
-import somnium.sarafan.service.ShoppingCartService;
-import somnium.sarafan.service.UserService;
+import somnium.sarafan.service.*;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -37,6 +34,9 @@ public class OrderController {
 
     @Autowired
     CartItemService cartItemService;
+
+    @Autowired
+    CouponService couponService;
 
     @PostMapping("/checkout")
     public ResponseEntity checkout(Long userId){
@@ -129,5 +129,15 @@ public class OrderController {
         responseBody.put("message","order cancelled");
         responseBody.put("data",order);
         return new ResponseEntity<>(responseBody,HttpStatus.OK);
+    }
+
+    @PostMapping("/activate")
+    public ResponseEntity activateGiftCoupon(Long orderId, Long coupId) {
+        Map<String,Object> responseBody = new HashMap<>();
+        Order order = couponService.activateCoupon(orderId,coupId);
+        responseBody.put("status", "SUCCESS");
+        responseBody.put("message", "user activated");
+        responseBody.put("data", order);
+        return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 }

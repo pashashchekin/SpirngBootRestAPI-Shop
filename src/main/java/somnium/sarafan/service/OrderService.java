@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import somnium.sarafan.domain.*;
 import somnium.sarafan.enums.OrderStatus;
 import somnium.sarafan.exceptions.NotFoundException;
+import somnium.sarafan.repository.CouponsRepository;
 import somnium.sarafan.repository.OrderRepository;
 
 import java.time.LocalDateTime;
@@ -20,13 +21,7 @@ public class OrderService {
     OrderRepository orderRepository;
 
     @Autowired
-    private CartItemService cartItemService;
-
-    @Autowired
-    ShoppingCartService shoppingCartService;
-
-    @Autowired
-    UserService userService;
+    CartItemService cartItemService;
 
     public Order createOrder(User user){
         Order order = new Order();
@@ -51,34 +46,30 @@ public class OrderService {
         return orderRepository.findByUserId(userId);
     }
 
-    public Order makePaided(Long orderId){
-        Order order = this.findById(orderId);
+    public Order makePaided(long orderId){
+        Order order = orderRepository.findById(orderId);
         order.setOrderStatus(OrderStatus.PAIDED);
         orderRepository.save(order);
         return orderRepository.save(order);
     }
 
-    public Order makeSended(Long orderId){
-        Order order = this.findById(orderId);
+    public Order makeSended(long orderId){
+        Order order = orderRepository.findById(orderId);
         order.setOrderStatus(OrderStatus.SENDED);
         order.setShippingDate(LocalDateTime.now());
         return orderRepository.save(order);
     }
 
-    public Order makeAccepted(Long orderId){
-        Order order = this.findById(orderId);
+    public Order makeAccepted(long orderId){
+        Order order = orderRepository.findById(orderId);
         order.setOrderStatus(OrderStatus.ACCEPTED);
         return orderRepository.save(order);
     }
 
-    public Order makeCancelled(Long orderId){
-        Order order = this.findById(orderId);
+    public Order makeCancelled(long orderId){
+        Order order = orderRepository.findById(orderId);
         order.setOrderStatus(OrderStatus.CANCELLED);
         return orderRepository.save(order);
-    }
-
-    public Order findById(Long id){
-        return orderRepository.findById(id).orElseThrow(() -> NotFoundException.forId(id));
     }
 
 }

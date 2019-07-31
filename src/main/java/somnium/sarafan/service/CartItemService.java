@@ -1,6 +1,5 @@
 package somnium.sarafan.service;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import somnium.sarafan.domain.CartItem;
@@ -9,6 +8,7 @@ import somnium.sarafan.domain.ShoppingCart;
 import somnium.sarafan.domain.User;
 import somnium.sarafan.exceptions.NotFoundException;
 import somnium.sarafan.repository.CartItemRepository;
+
 import java.util.List;
 
 @Service
