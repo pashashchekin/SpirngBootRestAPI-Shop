@@ -6,10 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import somnium.sarafan.domain.CartItem;
-import somnium.sarafan.domain.Order;
-import somnium.sarafan.domain.ShoppingCart;
-import somnium.sarafan.domain.User;
+import somnium.sarafan.domain.*;
 import somnium.sarafan.service.*;
 
 import java.util.Collection;
@@ -132,9 +129,15 @@ public class OrderController {
     }
 
     @PostMapping("/activate")
-    public ResponseEntity activateGiftCoupon(Long orderId, Long coupId) {
+    public ResponseEntity activateGiftCoupon(Long orderId, String code) {
         Map<String,Object> responseBody = new HashMap<>();
-        Order order = couponService.activateCoupon(orderId,coupId);
+        Coupon coupon = couponService.findByCode(code);
+        if (coupon == null){
+            responseBody.put("status", "ERROR");
+            responseBody.put("message", "coupon is not found");
+            return new ResponseEntity<>(responseBody, HttpStatus.NOT_FOUND);
+        }
+        Order order = couponService.activateCoupon(orderId,code);
         responseBody.put("status", "SUCCESS");
         responseBody.put("message", "user activated");
         responseBody.put("data", order);

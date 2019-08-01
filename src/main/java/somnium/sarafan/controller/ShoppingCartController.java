@@ -60,7 +60,7 @@ public class ShoppingCartController {
     }
 
     @PutMapping
-    public ResponseEntity updateProduct(Long itemId,int qty){
+    public ResponseEntity updateCartItem(Long itemId,int qty){
         Map<String,Object> responseBody = new HashMap<>();
         CartItem cartItem = cartItemService.findById(itemId);
         cartItemService.update(cartItem,qty);

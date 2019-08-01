@@ -1,59 +1,36 @@
 package somnium.sarafan.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import somnium.sarafan.domain.Coupon;
-import somnium.sarafan.repository.CouponsRepository;
+import somnium.sarafan.repository.CouponRepository;
 
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 @Component
-public class DailyCouponExpirationTask extends Thread {
+public class DailyCouponExpirationTask {
 
     @Autowired
-    CouponsRepository couponsRepository;
+    CouponRepository couponsRepository;
 
-    private Date startDate;
-    private boolean running;
+    private static final Logger log = LoggerFactory.getLogger(DailyCouponExpirationTask.class);
 
-    public DailyCouponExpirationTask() {
-        this.running = true;
-    }
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
-    @Override
-    public void run() {
-        if (running) {
-            System.out.println("Daily expired coupon remover initiated");
-            ExpirationTask();
-        }
-    }
-
-    private void ExpirationTask() {
-        startDate = new Date();
-        Collection<Coupon> allCoupons = couponsRepository.findAll();
-        int i = 0;
-        for (Coupon coupon : allCoupons) {
+    @Scheduled(cron = "0 0-15 14 * * *")
+    public void reportCurrentTime() {
+        Collection<Coupon> coupons = couponsRepository.findAll();
+        Date startDate = new Date();
+        for (Coupon coupon : coupons) {
             if (coupon.getEndDate().before(startDate)) {
+                log.info("Coupon is deleted, ID: {}", coupon.getId());
                 couponsRepository.delete(coupon);
-                i++;
             }
         }
-        System.out.println(i + " Coupons removed");
-        try {
-            TimeUnit.SECONDS.sleep(20);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
-
-    public boolean isRunning() {
-        return running;
-    }
-
-    public void stopTask() {
-        running = false;
-    }
-
 }

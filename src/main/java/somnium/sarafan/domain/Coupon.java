@@ -2,15 +2,14 @@ package somnium.sarafan.domain;
 
 
 import lombok.Data;
-
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
-import java.util.UUID;
 
 @Entity
 @Table(name = "tb_coupons")
 @Data
-public class Coupon {
+public class Coupon implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

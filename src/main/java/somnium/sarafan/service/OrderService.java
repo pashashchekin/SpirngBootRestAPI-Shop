@@ -1,17 +1,12 @@
 package somnium.sarafan.service;
 
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import somnium.sarafan.domain.*;
 import somnium.sarafan.enums.OrderStatus;
-import somnium.sarafan.exceptions.NotFoundException;
-import somnium.sarafan.repository.CouponsRepository;
 import somnium.sarafan.repository.OrderRepository;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
