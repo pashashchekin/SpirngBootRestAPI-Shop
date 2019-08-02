@@ -62,4 +62,55 @@ public class UserController {
         responseBody.put("data", activatedUser);
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
+
+    @PostMapping("/forgetPassword")
+    public ResponseEntity forgetPassword(String email, String name){
+        HashMap<String, Object> responseBody = new HashMap<>();
+        User user = userService.getByUserName(name);
+
+        if(!user.getUsername().equals(name)){
+            responseBody.put("status", "ERROR");
+            responseBody.put("message", "No such user");
+            return new ResponseEntity<>(responseBody, HttpStatus.NOT_FOUND);
+        }
+        if(!user.getEmail().equals(email)){
+            responseBody.put("status", "ERROR");
+            responseBody.put("message", "Wrong email");
+            return new ResponseEntity<>(responseBody, HttpStatus.FORBIDDEN);
+        }
+
+        User data = userService.forgetPassword(user);
+        responseBody.put("status","SUCCESS");
+        responseBody.put("message","Password reset");
+        responseBody.put("data", data);
+        return new ResponseEntity<>(responseBody, HttpStatus.OK);
+    }
+
+    @PostMapping("/changePassword")
+    public ResponseEntity changePassword(String name, String oldPassword, String newPassword, String confirmPassword){
+        User user = userService.getByUserName(name);
+        HashMap<String, Object> responseBody = new HashMap<>();
+        if(!user.getPassword().equals(oldPassword)){
+            responseBody.put("status", "ERROR");
+            responseBody.put("message", "Wrong password");
+            return new ResponseEntity<>(responseBody, HttpStatus.FORBIDDEN);
+        }
+        if(!newPassword.equals(confirmPassword)){
+            responseBody.put("status", "ERROR");
+            responseBody.put("message","Passwords do not match");
+            return new ResponseEntity<>(responseBody, HttpStatus.FORBIDDEN);
+        }
+        if (!user.getResetPassword()){
+            responseBody.put("status", "ERROR");
+            responseBody.put("message", "you cannot change your password");
+            return new ResponseEntity<>(responseBody, HttpStatus.FORBIDDEN);
+        }
+
+        User data =  userService.changePassword(name,oldPassword,newPassword,confirmPassword);
+        responseBody.put("status", "SUCCESS");
+        responseBody.put("message", "password has been changed");
+        responseBody.put("data", data);
+
+        return new ResponseEntity<>(responseBody,HttpStatus.OK);
+    }
 }

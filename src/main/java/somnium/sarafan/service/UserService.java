@@ -9,10 +9,13 @@ import org.springframework.util.StringUtils;
 import somnium.sarafan.config.jwt.TokenProvider;
 import somnium.sarafan.domain.ShoppingCart;
 import somnium.sarafan.domain.User;
-import somnium.sarafan.enums.Role;
 import somnium.sarafan.exceptions.NotFoundException;
 import somnium.sarafan.repository.UserRepository;
+import somnium.sarafan.utils.CodeConfig;
 import somnium.sarafan.utils.MailSender;
+
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,11 +38,13 @@ public class UserService {
     }
 
     public User addUser(User user){
-        User userFromDb = userRepo.findByUsername(user.getUsername());
         ShoppingCart shoppingCart = new ShoppingCart();
+        Date date = new Date();
         user.setActive(false);
         user.setActivationCode(UUID.randomUUID().toString());
         user.setIsAdmin(false);
+        user.setResetPassword(true);
+        user.setPasswordResetDate(date);
         user.setShoppingCart(shoppingCart);
         shoppingCart.setUser(user);
         if (!StringUtils.isEmpty(user.getEmail())) {
@@ -52,6 +57,40 @@ public class UserService {
             mailSender.send(user.getEmail(), "Activation code", message);
         }
         return  userRepo.save(user);
+    }
+
+    public User forgetPassword(User user){
+        CodeConfig codeConfig = CodeConfig.length(10);
+        String newPassword = CodeConfig.generate(codeConfig);
+        if (!StringUtils.isEmpty(user.getEmail())){
+            String message = String.format(
+                    "Your new password: %s",
+                    newPassword
+            );
+            mailSender.send(user.getEmail(), "New password", message);
+            user.setPassword(newPassword);
+        }
+        return userRepo.save(user);
+    }
+
+    public User changePassword(String username, String oldPassword, String newPassword, String confirmPassword){
+        User user = userRepo.findByUsername(username);
+        Date date = new Date();
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.DATE,7);
+        Date resetDate = c.getTime();
+        if (user.getResetPassword()){
+            if (user.getPassword().equals(oldPassword)){
+                if ((!StringUtils.isEmpty(newPassword)) && (newPassword.equals(confirmPassword))){
+                    user.setPassword(newPassword);
+                    user.setPasswordResetDate(resetDate);
+                    user.setResetPassword(false);
+                    userRepo.save(user);
+                }
+            }
+        }
+        return user;
     }
 
     public User activateUser(String code) {
@@ -69,6 +108,7 @@ public class UserService {
         return userRepo.findAll().stream().filter(u ->
                 u.getUsername().equals(username)).findFirst().orElse(null);
     }
+
 
     public String authenticate(User user) {
         try {
