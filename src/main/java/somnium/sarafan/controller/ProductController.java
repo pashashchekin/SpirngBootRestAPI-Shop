@@ -86,4 +86,15 @@ public class ProductController {
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PostMapping("addToCategory")
+    public ResponseEntity addProductToCategory(Long productId, Long categoryId){
+        Map<String,Object> responseBody = new HashMap<>();
+        Product product = productService.addCategoryToProduct(productId,categoryId);
+        responseBody.put("status","SUCCESS");
+        responseBody.put("message","product added to category");
+        responseBody.put("data", product);
+        return new ResponseEntity<>(responseBody, HttpStatus.OK);
+    }
+
 }

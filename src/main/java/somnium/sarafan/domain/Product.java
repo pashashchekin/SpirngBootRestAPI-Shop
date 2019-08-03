@@ -1,5 +1,6 @@
 package somnium.sarafan.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NonNull;
@@ -33,4 +34,9 @@ public class Product implements Serializable {
     @Column(name = "description")
     @ApiModelProperty (notes = "The product description")
     private String description;
+
+    @ManyToOne
+    @JsonBackReference
+    @JoinColumn(name="category_id")
+    private Category category;
 }

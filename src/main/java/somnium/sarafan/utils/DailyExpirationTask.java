@@ -9,8 +9,6 @@ import somnium.sarafan.domain.Coupon;
 import somnium.sarafan.domain.User;
 import somnium.sarafan.repository.CouponRepository;
 import somnium.sarafan.repository.UserRepository;
-
-import javax.jws.soap.SOAPBinding;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
@@ -25,8 +23,6 @@ public class DailyExpirationTask {
     UserRepository userRepository;
 
     private static final Logger log = LoggerFactory.getLogger(DailyExpirationTask.class);
-
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
     @Scheduled(cron = "0 0-15 14 * * *")
     public void deleteExpirationCoupons() {
@@ -45,10 +41,6 @@ public class DailyExpirationTask {
         Collection<User> users = userRepository.findAll();
         Date startDate = new Date();
         for (User user : users){
-            if (user.getPasswordResetDate() == null){
-                user.setPasswordResetDate(startDate);
-                userRepository.save(user);
-            }
             if (user.getPasswordResetDate().before(startDate)){
                 log.info("User {} can change password", user.getUsername());
                 user.setPasswordResetDate(startDate);
