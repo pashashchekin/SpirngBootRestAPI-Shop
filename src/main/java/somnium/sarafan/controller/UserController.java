@@ -14,6 +14,7 @@ import somnium.sarafan.service.UserService;
 import javax.validation.Valid;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -27,9 +28,9 @@ public class UserController {
     @ApiOperation(value =  "Get all users", response = Iterable.class)
     @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping()
-    private ResponseEntity findAllUsers(){
+    public ResponseEntity findAllUsers(){
         Map<String,Object> responseBody = new HashMap<>();
-        Collection<User> data = userService.getAllUsers();
+        List<User> data = userService.getAllUsers();
         responseBody.put("status", "SUCCESS");
         responseBody.put("message", "list of users");
         responseBody.put("data", data);

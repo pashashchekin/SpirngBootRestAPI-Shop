@@ -26,6 +26,9 @@ public class OrderService {
         order.setDeliveryMethod("Самовызов");
 
         List<CartItem> cartItemList = cartItemService.findByShoppingCart(shoppingCart);
+        for (CartItem cartItem : cartItemList){
+            cartItem.setOrder(order);
+        }
         order.setCartItemList(cartItemList);
         order.setOrderTotalSum(shoppingCart.getGrandTotalSum());
         order.setOrderTotalQty(shoppingCart.getGrandTotalQty());

@@ -33,7 +33,7 @@ public class ShoppingCartService {
     public void clearShoppingCart(ShoppingCart shoppingCart) {
         List<CartItem> cartItemList = cartItemService.findByShoppingCart(shoppingCart);
         for (CartItem cartItem : cartItemList) {
-            cartItemService.delete(cartItem.getId());
+            cartItem.setShoppingCart(null);
         }
         shoppingCartRepository.save(shoppingCart);
     }
