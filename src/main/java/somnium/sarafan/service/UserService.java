@@ -42,7 +42,7 @@ public class UserService {
         Date date = new Date();
         user.setActive(false);
         user.setActivationCode(UUID.randomUUID().toString());
-        user.setIsAdmin(false);
+        user.setAdmin(false);
         user.setResetPassword(true);
         user.setPasswordResetDate(date);
         user.setShoppingCart(shoppingCart);

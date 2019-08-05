@@ -51,7 +51,7 @@ public class LoginController {
         data.put("fullname", loggedUser.getUsername());
         data.put("email", loggedUser.getEmail());
         data.put("activation_code", loggedUser.getActivationCode());
-        data.put("is_admin", loggedUser.getIsAdmin());
+        data.put("is_admin", loggedUser.getAdmin());
         data.put("auth_token", token);
         responseBody.put("data", data);
         return new ResponseEntity<>(responseBody, HttpStatus.OK);

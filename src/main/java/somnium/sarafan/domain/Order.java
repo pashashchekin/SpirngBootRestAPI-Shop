@@ -12,7 +12,6 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Data
 @Table(name = "tb_order")
 public class Order implements Serializable {
 
@@ -40,4 +39,53 @@ public class Order implements Serializable {
     @ManyToOne
     @JsonIgnore
     private User user;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setOrderDate(LocalDateTime orderDate) {
+        this.orderDate = orderDate;
+    }
+
+    public void setShippingDate(LocalDateTime shippingDate) {
+        this.shippingDate = shippingDate;
+    }
+
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public void setDeliveryMethod(String deliveryMethod) {
+        this.deliveryMethod = deliveryMethod;
+    }
+
+    public int getOrderTotalSum() {
+        return orderTotalSum;
+    }
+
+    public void setOrderTotalSum(int orderTotalSum) {
+        this.orderTotalSum = orderTotalSum;
+    }
+
+    public void setOrderTotalQty(int orderTotalQty) {
+        this.orderTotalQty = orderTotalQty;
+    }
+
+
+    public void setCartItemList(List<CartItem> cartItemList) {
+        this.cartItemList = cartItemList;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

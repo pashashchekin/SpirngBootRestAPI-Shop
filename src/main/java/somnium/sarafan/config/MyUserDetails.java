@@ -21,7 +21,7 @@ public class MyUserDetails implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         final User user = userService.getByUserName(username);
         BCryptPasswordEncoder encoder = passwordEncoder();
-        if (user.getIsAdmin()){
+        if (user.getAdmin()){
             return new org.springframework.security.core.userdetails.User(
                     user.getUsername(),encoder.encode(user.getPassword()), AuthorityUtils.createAuthorityList("ROLE_ADMIN"));
         }

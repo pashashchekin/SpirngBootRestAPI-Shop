@@ -7,7 +7,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "tb_category")
-@Data
 public class Category {
 
     @Id
@@ -18,5 +17,18 @@ public class Category {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "category", cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     private List<Product> products;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+
+    public List<Product> getProducts() {
+        return products;
+    }
 
 }

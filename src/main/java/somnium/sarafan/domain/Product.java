@@ -12,7 +12,6 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "tb_product")
-@Data
 public class Product implements Serializable {
 
     @Id
@@ -39,4 +38,44 @@ public class Product implements Serializable {
     @JsonBackReference
     @JoinColumn(name="category_id")
     private Category category;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
 }
