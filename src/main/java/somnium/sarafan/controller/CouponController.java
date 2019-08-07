@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import somnium.sarafan.domain.Coupon;
+import somnium.sarafan.enums.ServerStatus;
 import somnium.sarafan.service.CouponService;
 
 import java.util.Collection;
@@ -28,7 +29,7 @@ public class CouponController {
     public ResponseEntity getAllCoupons(){
         Map<String,Object> responseBody = new HashMap<>();
         Collection<Coupon> data = couponService.getAllCoupons();
-        responseBody.put("status","SUCCESS");
+        responseBody.put("status", ServerStatus.SUCCESS);
         responseBody.put("message","list of coupons");
         responseBody.put("data", data);
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
@@ -41,7 +42,7 @@ public class CouponController {
                                     @DateTimeFormat(pattern = "dd.MM.yyyy") Date endDate){
         Map<String,Object> responseBody = new HashMap<>();
         Coupon newCoupon = couponService.addCoupon(percent, startDate, endDate);
-        responseBody.put("status","SUCCESS");
+        responseBody.put("status",ServerStatus.SUCCESS);
         responseBody.put("message","coupon created");
         responseBody.put("data", newCoupon);
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
@@ -56,7 +57,7 @@ public class CouponController {
         Map<String,Object> responseBody = new HashMap<>();
         Coupon coupon = couponService.findById(id);
         couponService.update(coupon,startDate,endDate,percent);
-        responseBody.put("status","SUCCESS");
+        responseBody.put("status",ServerStatus.SUCCESS);
         responseBody.put("message","coupon updated");
         responseBody.put("data", coupon);
         return new ResponseEntity<>(responseBody,HttpStatus.OK);

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import somnium.sarafan.domain.User;
+import somnium.sarafan.enums.ServerStatus;
 import somnium.sarafan.service.UserService;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,25 +27,25 @@ public class LoginController {
     public ResponseEntity login(@RequestBody User user){
         Map<String,Object> responseBody = new HashMap<>();
         if (user.getPassword() == null || user.getUsername() == null){
-            responseBody.put("status", "ERROR");
+            responseBody.put("status", ServerStatus.ERROR);
             responseBody.put("message", "Bad request");
             return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
         }
         User loggedUser = userService.getByUserName(user.getUsername());
         if(loggedUser == null){
-            responseBody.put("status", "ERROR");
+            responseBody.put("status", ServerStatus.ERROR);
             responseBody.put("message", "No such user");
             return new ResponseEntity<>(responseBody, HttpStatus.NOT_FOUND);
         }
 
         if(!loggedUser.getPassword().equals(user.getPassword())){
-            responseBody.put("status", "ERROR");
+            responseBody.put("status", ServerStatus.ERROR);
             responseBody.put("message", "Wrong password");
             return new ResponseEntity<>(responseBody, HttpStatus.FORBIDDEN);
         }
 
         String token  = userService.authenticate(loggedUser);
-        responseBody.put("status","SUCCESS");
+        responseBody.put("status",ServerStatus.SUCCESS);
         responseBody.put("message","Login successful");
         Map<String, Object> data = new HashMap<>();
         data.put("id", loggedUser.getId());
