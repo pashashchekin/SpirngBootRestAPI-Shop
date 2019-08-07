@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import somnium.sarafan.domain.Category;
 import somnium.sarafan.domain.Product;
+import somnium.sarafan.enums.ServerStatus;
 import somnium.sarafan.service.CategoryService;
 import somnium.sarafan.service.ProductService;
 
@@ -36,11 +37,11 @@ public class CategoryController {
         Map<String, Object> responseBody =  new HashMap<>();
         Collection<Category> data = categoryService.findAll();
         if(data.size() == 0){
-            responseBody.put("status", "ERROR");
+            responseBody.put("status", ServerStatus.ERROR);
             responseBody.put("message", "categories is not found");
             return new ResponseEntity<>(responseBody, HttpStatus.NOT_FOUND);
         }
-        responseBody.put("status","SUCCESS");
+        responseBody.put("status", ServerStatus.SUCCESS);
         responseBody.put("message","list of categories");
         responseBody.put("data",data);
         return new ResponseEntity<>(responseBody,HttpStatus.OK);
@@ -51,12 +52,12 @@ public class CategoryController {
         Map<String, Object> responseBody =  new HashMap<>();
         List<Product> data = productService.getProductsByCategory(id);
         if (data.size() == 0){
-            responseBody.put("status","ERROR");
+            responseBody.put("status", ServerStatus.ERROR);
             responseBody.put("message","products is not found");
             return new ResponseEntity<>(responseBody,HttpStatus.NOT_FOUND);
 
         }
-        responseBody.put("status","SUCCESS");
+        responseBody.put("status", ServerStatus.SUCCESS);
         responseBody.put("message","products in category");
         responseBody.put("data",data);
         return new ResponseEntity<>(responseBody,HttpStatus.OK);
